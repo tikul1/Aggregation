@@ -8,7 +8,7 @@ const marksList = async (req, res) => {
     // .populate("studentId", "_id firstname lastname").populate("subjectId", "_id subjectName status");
     res.status(200).json({ list });
   } catch (e) {
-    res.status(400).json({ msg: "an error occured!!!!!!!!!!!!!!!!!!!!!!!" });
+    res.status(400).json({ msg: "an error occured" });
   }
 };
 
@@ -24,7 +24,7 @@ const markAdd = async (req, res) => {
     await mark.save();
     res.json(mark);
   } catch (error) {
-    res.json("Error Occured!!!!!!!!!!!!!!!!!!!!");
+    res.json("Error Occured");
   }
 };
 
@@ -33,6 +33,7 @@ const report = async (req, res) => {
     let fName = req.query.firstname ? req.query.firstname : "";
     let lName = req.query.lastname ? req.query.lastname : "";
     let sName = req.query.subject ? req.query.subject : "";
+    // console.log(sName);
     const studentDetails = await students.aggregate([
       {
         $match: {
@@ -99,6 +100,21 @@ const report = async (req, res) => {
           as: "marks",
         },
       },
+      // {
+      //   $unwind: {
+      //     path: "$marks.subjectId",
+      //     preserveNullAndEmptyArrays: true,
+      //   },
+      // },
+      // {
+      //   $lookup: {
+      //     from: "subjects",
+      //     localField: "marks.subjectId",
+      //     foreignField: "_id",
+      //     as: "subjects",
+      //   },
+      // },
+
       {
         $project: {
           totalMarks: { $sum: "$marks.marks" },
@@ -118,7 +134,7 @@ const report = async (req, res) => {
 
     res.json(studentDetails);
   } catch (error) {
-    res.json("Error Occured!!!!!!!!!!!!!");
+    res.json("Error Occured");
   }
 };
 
